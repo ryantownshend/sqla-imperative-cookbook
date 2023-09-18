@@ -1,0 +1,49 @@
+[tool.poetry]
+name = "sqla-imperative-cookbook"
+version = "0.1.0"
+description = ""
+authors = ["Ryan <citizen.townshend@gmail.com>"]
+readme = "README.md"
+packages = [{include = "cookbook"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+click = "^8.1.7"
+sqlalchemy = "^2.0.20"
+rich = "^13.5.3"
+black = "^23.9.1"
+mypy = "^1.5.1"
+ruff = "^0.0.290"
+pytest = "^7.4.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py311',]
+
+[tool.mypy]
+packages = "cookbook"
+disallow_untyped_defs = true
+disallow_any_unimported = true
+no_implicit_optional = true
+check_untyped_defs = true
+warn_return_any = true
+warn_unused_ignores = true
+show_error_codes = true
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+select = [
+    "F",    # pyflakes
+    "E",    # pycodestyle Error
+    "W",    # pycodestle Warning
+    "I",    # isort
+    "B",    # bugbear
+    "C90",  # mccabe
+    "N",    # pep8-naming
+]
