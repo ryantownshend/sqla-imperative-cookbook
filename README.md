@@ -8,8 +8,7 @@ For DDD using Python Dataclasses we will be using `imperative mapping` aka
 - [python dataclasses](https://docs.python.org/3/library/dataclasses.html)
 - [SQLAlchemy](https://www.sqlalchemy.org/)
 - [sqlalchemy docs on mapping dataclasses](https://docs.sqlalchemy.org/en/14/orm/dataclasses.html#mapping-dataclasses-using-declarative-with-imperative-table)
-- [Basic Relationship Patterns](https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html)
-- <https://lyz-code.github.io/blue-book/coding/python/sqlalchemy/>
+- [Basic Relationship Patterns](https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html)
 
 ## Lessons learned
 
@@ -36,9 +35,12 @@ For a DDD Aggregate we don't need this reference back to our root object.
 The foreign keys in the database are used to populate the object lists as
 needed.
 
-The `one_to_many_example.py` example avoids this.
+The `one_to_many_backref.py` example avoids this.
 
-This is configured using the `relationship.lazy` parameter to `relationship()`;
+## lazy relationship settings
+
+`relationship.lazy` parameter of `relationship()`
+
 common values for this parameter include
 
 - select
