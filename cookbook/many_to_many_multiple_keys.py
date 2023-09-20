@@ -157,25 +157,30 @@ def run() -> None:
     mapper_registry.metadata.create_all(engine)
 
     with Session(engine) as session:
-        player1 = Person(name="Student")
-        player2 = Person(name="Instructor")
+        student = Person(name="Student")
+        instructor = Person(name="Instructor")
         course1 = Course(name="Course1")
         event1 = Event(name="Event1")
 
-        session.add_all([player1, player2, course1, event1])
+        session.add_all([student, instructor, course1, event1])
 
         session.commit()
 
         qual1 = QualificationRecord(
-            student=player1, event=event1, course=course1, instructor=player2
+            student=student, event=event1, course=course1, instructor=instructor
         )
         session.add(qual1)
         session.commit()
 
-        print(player1)
+        print(student)
 
         print("---")
-        print(player2)
+        print(instructor)
+
+        assert len(student.qualifications) == 1
+        assert len(student.instructed) == 0
+        assert len(instructor.qualifications) == 0
+        assert len(instructor.instructed) == 1
 
 
 if __name__ == "__main__":
