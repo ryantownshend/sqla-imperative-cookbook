@@ -2,7 +2,7 @@
 name = "sqla-imperative-cookbook"
 version = "0.1.0"
 description = ""
-authors = ["Ryan <citizen.townshend@gmail.com>"]
+authors = ["Ryan Townshend <rtownshend@spiria.com>"]
 readme = "README.md"
 packages = [{include = "cookbook"}]
 
