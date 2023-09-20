@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import List
 
 from rich import print
 from sqlalchemy import Column, ForeignKey, Integer, String, Table, create_engine
@@ -22,7 +21,7 @@ class User:
     name: str | None = None
     fullname: str | None = None
     nickname: str | None = None
-    addresses: List[Address] = field(default_factory=list)
+    addresses: list[Address] = field(default_factory=list)
 
 
 @dataclass
@@ -49,7 +48,9 @@ address_table = Table(
 )
 
 user_properties = {
-    "addresses": relationship(Address, backref="user", order_by=address_table.c.id),
+    "addresses": relationship(
+        Address, backref="user", order_by=address_table.columns.id
+    ),
 }
 
 

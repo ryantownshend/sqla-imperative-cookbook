@@ -5,10 +5,132 @@ Common patterns pre-cooked for SQLAlchemy Imperative mapping using python datacl
 For DDD using Python Dataclasses we will be using `imperative mapping` aka
 `Classical` sqlalchemy.
 
+Most of the SQLAlchemy documentation is focused on the "Declarative" mapping
+approach, so I have built these examples as a reference and sandbox.
+
 - [python dataclasses](https://docs.python.org/3/library/dataclasses.html)
 - [SQLAlchemy](https://www.sqlalchemy.org/)
 - [sqlalchemy docs on mapping dataclasses](https://docs.sqlalchemy.org/en/14/orm/dataclasses.html#mapping-dataclasses-using-declarative-with-imperative-table)
 - [Basic Relationship Patterns](https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html)
+
+## Object modeling concept
+
+The modeling is done in three pieces.
+
+- dataclass
+- table definition
+- properties
+
+### Dataclass
+
+```python
+@dataclass
+class User:
+    name: str | None = None
+    fullname: str | None = None
+    nickname: str | None = None
+    addresses: list[Address] = field(default_factory=list)
+    uuid: str | None = None
+```
+
+### Table Definition
+
+```python
+user_table = Table(
+    "user",
+    mapper_registry.metadata,
+    Column("name", String(50)),
+    Column("fullname", String(50)),
+    Column("nickname", String(12)),
+    Column("uuid", String(40), primary_key=True, default=lambda: str(uuid.uuid4())),
+)
+```
+
+### Properties
+
+```python
+user_properties = {
+    "addresses": relationship(  # references the "addresses" list on the dataclass
+        Address,
+        back_populates="user",  # reference to the "user" relationship property
+        order_by=address_table.columns.uuid,
+    ),
+}
+```
+
+## The cookbook examples
+
+### one_to_one.py
+
+`Soldier has a Rank`.
+
+Simple ForeignKey relations between two objects
+
+### one_to_many_backref.py
+
+`User has a list of Addresses`.
+
+Properties on User set up the "backref" connection to the addresses.
+
+### one_to_many_back_populates.py
+
+`User has a list of Addresses`.
+
+Similar effect as `backref` but requiring both sides be defined in the properties
+for each table.
+
+Additionally this example uses UUID4 strings as primary keys instead of Integers.
+
+### many_to_many_association_table.py
+
+`Students have Courses, and Courses have Students`.
+
+Student and Course objects both have lists of their related objects.
+This "association" is managed with an additional table definition, which is
+referenced as the "secondary" argument in the properties for each table.
+
+### many_to_many_multiple_keys.py
+
+`Player can be either Student or Instructor on a QualificationRecord`.
+
+Many to Many mapping between Student and Course with a join object
+QualificationRecord acting as association table.
+
+Student has a list of QualificationRecord as "qualifications", and a list of
+QualificationRecord as "instructed".
+
+With two keys mapping back to one object we have to take additional steps to
+ensure clarity.
+
+The `foreign_keys` argument to `relationship` takes a reference to the specific
+table and column.
+
+```python
+qualification_record_properties = {
+    "player": relationship(
+        Player,
+        back_populates="qualifications",
+        foreign_keys=[qualification_record_table.c.player_uuid],
+    ),
+    "instructor": relationship(
+        Player,
+        back_populates="instructed",
+        foreign_keys=[qualification_record_table.c.instructor_uuid],
+    ),
+    "event": relationship(Event),
+    "course": relationship(Course),
+}
+```
+
+`foreign_keys` expects a list of columns
+
+- `qualification_record_table` is the Table definition,
+- `c` is an alias for the `columns` property
+- `instructor_uuid` is the specific column for the foreign key
+
+### generic_relationship_example.py
+
+todo
 
 ## Lessons learned
 
@@ -36,6 +158,10 @@ The foreign keys in the database are used to populate the object lists as
 needed.
 
 The `one_to_many_backref.py` example avoids this.
+
+## relationship docs
+
+<https://docs.sqlalchemy.org/en/20/orm/relationship_api.html#sqlalchemy.orm.relationship.params.foreign_keys>
 
 ## lazy relationship settings
 

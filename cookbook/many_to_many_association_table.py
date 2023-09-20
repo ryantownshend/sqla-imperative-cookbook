@@ -103,6 +103,9 @@ def run() -> None:
         s1_product = session.get(Student, 1)
         s3_product = session.get(Student, 3)
 
+        if c1_product is not None:
+            assert c1_product.id is not None
+
         print(c1_product)
         print(s1_product)
         if s1_product is not None:

@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import uuid
 from dataclasses import dataclass, field
 
 from rich import print
-from sqlalchemy import Column, ForeignKey, Integer, String, Table, create_engine
+from sqlalchemy import Column, ForeignKey, String, Table, create_engine
 from sqlalchemy.orm import Session, registry, relationship
 
 mapper_registry = registry()
@@ -17,41 +18,45 @@ class User:
     relations can be really messy in the object graph.
     """
 
-    id: int = field(init=False)
     name: str | None = None
     fullname: str | None = None
     nickname: str | None = None
     addresses: list[Address] = field(default_factory=list)
+    # uuid maps to a generated UUID key in the orm
+    uuid: str | None = None
 
 
 @dataclass
 class Address:
-    id: int = field(init=False)
+    # id: int = field(init=False)
     email_address: str | None = None
+    uuid: str | None = None
 
 
 user_table = Table(
     "user",
     mapper_registry.metadata,
-    Column("id", Integer, primary_key=True),
     Column("name", String(50)),
     Column("fullname", String(50)),
     Column("nickname", String(12)),
+    # With a new object we generate a UUID4
+    Column("uuid", String(40), primary_key=True, default=lambda: str(uuid.uuid4())),
 )
 
 address_table = Table(
     "address",
     mapper_registry.metadata,
-    Column("id", Integer, primary_key=True),
-    Column("user_id", Integer, ForeignKey("user.id")),
+    # Column("id", Integer, primary_key=True),
+    Column("user_id", String(40), ForeignKey("user.uuid")),
     Column("email_address", String(50)),
+    Column("uuid", String(40), primary_key=True, default=lambda: str(uuid.uuid4())),
 )
 
 user_properties = {
-    "addresses": relationship(
+    "addresses": relationship(  # references the "addresses" list on the dataclass
         Address,
-        back_populates="user",
-        order_by=address_table.columns.id,
+        back_populates="user",  # reference to the "user" relationship property
+        order_by=address_table.columns.uuid,
     ),
 }
 
@@ -94,18 +99,13 @@ def run() -> None:
         user.addresses.append(Address(email_address="email4"))
 
         session.commit()
+
+        assert user.uuid is not None
+        assert len(user.addresses) == 4
+
         print(user)
 
-        add1 = session.get(Address, 1)
-        print(add1)
-
-    print(address_table.c)
-    # sqlalchemy.orm.Bundle.c: ReadOnlyColumnCollection
-    # an alias for Bundle.columns
-
-    # print("---")
-    # for item in dir(address_table):
-    #     print(item)
+        print(address_table.c.uuid)
 
 
 if __name__ == "__main__":
