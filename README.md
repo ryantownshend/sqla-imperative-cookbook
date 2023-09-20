@@ -21,6 +21,9 @@ The modeling is done in three pieces.
 - table definition: SQLAlchmeny Table definition
 - properties: properties for columns in the Table definition
 
+The three pieces are brought together in the 
+`mapper_registry.map_imperatively` function to manage the database.
+
 ### Dataclass
 
 ```python

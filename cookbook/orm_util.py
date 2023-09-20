@@ -8,7 +8,7 @@ mapper_registry = registry()
 
 @dataclass
 class TableMapping:
-    dataclass: dataclass  # type: ignore
+    dataclass: dataclass  # type: ignore[valid-type]
     table: Table
     properties: dict | None = None
 
