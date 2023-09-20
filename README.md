@@ -17,9 +17,9 @@ approach, so I have built these examples as a reference and sandbox.
 
 The modeling is done in three pieces.
 
-- dataclass
-- table definition
-- properties
+- dataclass: pure python dataclass object
+- table definition: SQLAlchmeny Table definition
+- properties: properties for columns in the Table definition
 
 ### Dataclass
 
@@ -60,17 +60,37 @@ user_properties = {
 
 ## The cookbook examples
 
+Each of the cookbook examples is self-contained and executable.
+
+```shell
+poetry run python one_to_one.py
+```
+
+Any ide which can handle a pyproject.toml should be able to run them as well.
+
 ### one_to_one.py
 
 `Soldier has a Rank`.
 
 Simple ForeignKey relations between two objects
 
+```python
+"rank": relationship(Rank)
+```
+
 ### one_to_many_backref.py
 
 `User has a list of Addresses`.
 
 Properties on User set up the "backref" connection to the addresses.
+
+```python
+user_properties = {
+    "addresses": relationship(
+        Address, backref="user", order_by=address_table.columns.id
+    ),
+}
+```
 
 ### one_to_many_back_populates.py
 
@@ -81,6 +101,24 @@ for each table.
 
 Additionally this example uses UUID4 strings as primary keys instead of Integers.
 
+```python
+user_properties = {
+    "addresses": relationship(
+        Address,
+        back_populates="user",
+        order_by=address_table.columns.uuid,
+    ),
+}
+
+
+address_properties = {
+    "user": relationship(
+        User,
+        back_populates="addresses",
+    ),
+}
+```
+
 ### many_to_many_association_table.py
 
 `Students have Courses, and Courses have Students`.
@@ -89,9 +127,27 @@ Student and Course objects both have lists of their related objects.
 This "association" is managed with an additional table definition, which is
 referenced as the "secondary" argument in the properties for each table.
 
+```python
+student_properties = {
+    "courses": relationship(
+        Course,
+        secondary=assoc_table,
+        back_populates="students",
+    ),
+}
+
+course_properties = {
+    "students": relationship(
+        Student,
+        secondary=assoc_table,
+        back_populates="courses",
+    )
+}
+```
+
 ### many_to_many_multiple_keys.py
 
-`Player can be either Student or Instructor on a QualificationRecord`.
+`Person can be either Student or Instructor on a QualificationRecord`.
 
 Many to Many mapping between Student and Course with a join object
 QualificationRecord acting as association table.
@@ -105,20 +161,35 @@ ensure clarity.
 The `foreign_keys` argument to `relationship` takes a reference to the specific
 table and column.
 
+Notice how the `back_populates` arguments map to each other.
+
 ```python
 qualification_record_properties = {
-    "player": relationship(
-        Player,
+    "student": relationship(
+        Person,
         back_populates="qualifications",
-        foreign_keys=[qualification_record_table.c.player_uuid],
+        foreign_keys=[qualification_record_table.c.student_uuid],
     ),
     "instructor": relationship(
-        Player,
+        Person,
         back_populates="instructed",
         foreign_keys=[qualification_record_table.c.instructor_uuid],
     ),
     "event": relationship(Event),
     "course": relationship(Course),
+}
+
+person_properties = {
+    "qualifications": relationship(
+        QualificationRecord,
+        back_populates="student",
+        foreign_keys=[qualification_record_table.c.student_uuid],
+    ),
+    "instructed": relationship(
+        QualificationRecord,
+        back_populates="instructor",
+        foreign_keys=[qualification_record_table.c.instructor_uuid],
+    ),
 }
 ```
 
@@ -131,33 +202,6 @@ qualification_record_properties = {
 ### generic_relationship_example.py
 
 todo
-
-## Lessons learned
-
-For the purposes of mapping tables to an object graph of dataclasses, database
-relationship should generally be one way.
-
-The repository will return our Aggregate object with relationships already
-mapped, thus circular relations will pointlessly populate. This concept is
-demonstrated in the `many_to_many_example.py` which maps Parent and Child to
-each other.
-
-```text
-Parent(name='parent 1', id='64e57282-2277-44e3-9166-94babb5b33e8', 
-children=[
-    Child(name='child 1', id='0a8aedce-f64e-4883-8be1-811f975a5740', parents=[...])])
---- circular silliness ---
-Child(name='child 1', id='0a8aedce-f64e-4883-8be1-811f975a5740',
-    parents=[Parent(name='parent 1', id='64e57282-2277-44e3-9166-94babb5b33e8', children=[...])])
-Parent(name='parent 1', id='64e57282-2277-44e3-9166-94babb5b33e8',
-    children=[Child(name='child 1', id='0a8aedce-f64e-4883-8be1-811f975a5740', parents=[...])])
-```
-
-For a DDD Aggregate we don't need this reference back to our root object.
-The foreign keys in the database are used to populate the object lists as
-needed.
-
-The `one_to_many_backref.py` example avoids this.
 
 ## relationship docs
 

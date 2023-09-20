@@ -53,9 +53,9 @@ address_table = Table(
 )
 
 user_properties = {
-    "addresses": relationship(  # references the "addresses" list on the dataclass
+    "addresses": relationship(
         Address,
-        back_populates="user",  # reference to the "user" relationship property
+        back_populates="user",
         order_by=address_table.columns.uuid,
     ),
 }

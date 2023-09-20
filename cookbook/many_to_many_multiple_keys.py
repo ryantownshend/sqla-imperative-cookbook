@@ -1,6 +1,6 @@
 """ Many to Many with multiple foreign keys to the same model.
 
-In this example, QualificationRecord has Player references to two fields:
+In this example, QualificationRecord has Person references to two fields:
 
 - "student"
 - "instructor"
@@ -34,7 +34,7 @@ mapper_registry = registry()
 
 
 @dataclass
-class Player:
+class Person:
     name: str
     qualifications: list[QualificationRecord] = field(default_factory=list)
     instructed: list[QualificationRecord] = field(default_factory=list)
@@ -55,16 +55,16 @@ class Course:
 
 @dataclass
 class QualificationRecord:
-    player: Player
-    instructor: Player
+    student: Person
+    instructor: Person
     event: Event
     course: Course
     timestamp: datetime = datetime.utcnow()
     uuid: str | None = None
 
 
-player_table = Table(
-    "player",
+person_table = Table(
+    "person",
     mapper_registry.metadata,
     Column("name", String(50)),
     Column("uuid", String(40), primary_key=True, default=lambda: str(uuid.uuid4())),
@@ -88,8 +88,8 @@ course_table = Table(
 qualification_record_table = Table(
     "qualification_record",
     mapper_registry.metadata,
-    Column("player_uuid", String(40), ForeignKey("player.uuid")),
-    Column("instructor_uuid", String(40), ForeignKey("player.uuid")),
+    Column("student_uuid", String(40), ForeignKey("person.uuid")),
+    Column("instructor_uuid", String(40), ForeignKey("person.uuid")),
     Column("event_uuid", String(40), ForeignKey("event.uuid")),
     Column("course_uuid", String(40), ForeignKey("course.uuid")),
     Column("timestamp", DateTime),
@@ -98,13 +98,13 @@ qualification_record_table = Table(
 
 
 qualification_record_properties = {
-    "player": relationship(
-        Player,
+    "student": relationship(
+        Person,
         back_populates="qualifications",
-        foreign_keys=[qualification_record_table.c.player_uuid],
+        foreign_keys=[qualification_record_table.c.student_uuid],
     ),
     "instructor": relationship(
-        Player,
+        Person,
         back_populates="instructed",
         foreign_keys=[qualification_record_table.c.instructor_uuid],
     ),
@@ -112,11 +112,11 @@ qualification_record_properties = {
     "course": relationship(Course),
 }
 
-player_properties = {
+person_properties = {
     "qualifications": relationship(
         QualificationRecord,
-        back_populates="player",
-        foreign_keys=[qualification_record_table.c.player_uuid],
+        back_populates="student",
+        foreign_keys=[qualification_record_table.c.student_uuid],
     ),
     "instructed": relationship(
         QualificationRecord,
@@ -128,9 +128,9 @@ player_properties = {
 
 def start_mappers() -> None:
     mapper_registry.map_imperatively(
-        Player,
-        player_table,
-        properties=player_properties,
+        Person,
+        person_table,
+        properties=person_properties,
     )
 
     mapper_registry.map_imperatively(
@@ -157,8 +157,8 @@ def run() -> None:
     mapper_registry.metadata.create_all(engine)
 
     with Session(engine) as session:
-        player1 = Player(name="Student")
-        player2 = Player(name="Instructor")
+        player1 = Person(name="Student")
+        player2 = Person(name="Instructor")
         course1 = Course(name="Course1")
         event1 = Event(name="Event1")
 
@@ -167,7 +167,7 @@ def run() -> None:
         session.commit()
 
         qual1 = QualificationRecord(
-            player=player1, event=event1, course=course1, instructor=player2
+            student=player1, event=event1, course=course1, instructor=player2
         )
         session.add(qual1)
         session.commit()
