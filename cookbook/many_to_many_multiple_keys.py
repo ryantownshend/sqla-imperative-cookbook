@@ -5,7 +5,7 @@ In this example, QualificationRecord has Player references to two fields:
 - "student"
 - "instructor"
 
-Wr get this functional with use of the relationship foreign_keys argument
+We get this functional with use of the relationship foreign_keys argument
 
 
 - https://stackoverflow.com/questions/75078544/sqlalchemy-imperative-mapping-many-to-many-relationship
