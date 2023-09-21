@@ -5,6 +5,15 @@ Common patterns pre-cooked for SQLAlchemy Imperative mapping using python datacl
 For DDD using Python Dataclasses we will be using `imperative mapping` aka
 `Classical` sqlalchemy.
 
+Domain Driven Design leans heavily on the "Dependency Inversion Principle" which
+states.
+
+> High-level modules should not depend on low-level modules.
+> Both should depend on abstractions.
+
+Thus, our domain model is at the highest level and should have no dependencies or
+even knowledge of the mechanical plumbing of managing the database.
+
 Most of the SQLAlchemy documentation is focused on the "Declarative" mapping
 approach, so I have built these examples as a reference and sandbox.
 
@@ -14,7 +23,8 @@ approach, so I have built these examples as a reference and sandbox.
 - [SQLAlchemy](https://www.sqlalchemy.org/)
 - [sqlalchemy docs on mapping dataclasses](https://docs.sqlalchemy.org/en/14/orm/dataclasses.html#mapping-dataclasses-using-imperative-mapping)
 - [Basic Relationship Patterns](https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html)
-
+- <http://www.cosmicpython.com/>
+- 
 ## Object modeling concept
 
 The modeling is done in three pieces.
