@@ -8,9 +8,11 @@ For DDD using Python Dataclasses we will be using `imperative mapping` aka
 Most of the SQLAlchemy documentation is focused on the "Declarative" mapping
 approach, so I have built these examples as a reference and sandbox.
 
+## Docs and articles
+
 - [python dataclasses](https://docs.python.org/3/library/dataclasses.html)
 - [SQLAlchemy](https://www.sqlalchemy.org/)
-- [sqlalchemy docs on mapping dataclasses](https://docs.sqlalchemy.org/en/14/orm/dataclasses.html#mapping-dataclasses-using-declarative-with-imperative-table)
+- [sqlalchemy docs on mapping dataclasses](https://docs.sqlalchemy.org/en/14/orm/dataclasses.html#mapping-dataclasses-using-imperative-mapping)
 - [Basic Relationship Patterns](https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html)
 
 ## Object modeling concept
@@ -205,10 +207,6 @@ person_properties = {
 ### generic_relationship_example.py
 
 todo
-
-## relationship docs
-
-<https://docs.sqlalchemy.org/en/20/orm/relationship_api.html#sqlalchemy.orm.relationship.params.foreign_keys>
 
 ## lazy relationship settings
 
