@@ -24,13 +24,14 @@ approach, so I have built these examples as a reference and sandbox.
 - [sqlalchemy docs on mapping dataclasses](https://docs.sqlalchemy.org/en/14/orm/dataclasses.html#mapping-dataclasses-using-imperative-mapping)
 - [Basic Relationship Patterns](https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html)
 - <http://www.cosmicpython.com/>
-- 
+- <https://martinfowler.com/bliki/DomainDrivenDesign.html>
+
 ## Object modeling concept
 
 The modeling is done in three pieces.
 
 - dataclass: pure python dataclass object
-- table definition: SQLAlchmeny Table definition
+- table definition: SQLAlchemy Table definition
 - properties: properties for columns in the Table definition
 
 The three pieces are brought together in the 
