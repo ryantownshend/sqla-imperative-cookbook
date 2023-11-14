@@ -18,7 +18,6 @@ class Soldier:
 
 @dataclass
 class Rank:
-    id: int = field(init=False)
     name: str
     acronym: str
 
@@ -28,15 +27,14 @@ soldier_table = Table(
     mapper_registry.metadata,
     Column("id", Integer, primary_key=True),
     Column("name", String(50)),
-    Column("rank_id", ForeignKey("rank.id")),
+    Column("rank_id", ForeignKey("rank.acronym")),
 )
 
 rank_table = Table(
     "rank",
     mapper_registry.metadata,
-    Column("id", Integer, primary_key=True),
     Column("name", String(50)),
-    Column("acronym", String(50)),
+    Column("acronym", String(50), primary_key=True),
 )
 
 soldier_properties = {

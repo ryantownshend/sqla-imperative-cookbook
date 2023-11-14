@@ -30,11 +30,15 @@ approach, so I have built these examples as a reference and sandbox.
 
 The modeling is done in three pieces.
 
-- dataclass: pure python dataclass object
-- table definition: SQLAlchemy Table definition
-- properties: properties for columns in the Table definition
+- Dataclass: pure python dataclass object
+- Table definition: SQLAlchemy Table definition
+- Properties: properties for columns in the Table definition
 
-The three pieces are brought together in the 
+These dataclass objects are used in the model and represent the business logic.
+Table definition and Properties are used in the orm layer and map to the
+dataclass to database.
+
+The three pieces are brought together in the
 `mapper_registry.map_imperatively` function to manage the database.
 
 ### Dataclass
@@ -214,6 +218,13 @@ person_properties = {
 - `qualification_record_table` is the Table definition,
 - `c` is an alias for the `columns` property
 - `instructor_uuid` is the specific column for the foreign key
+
+### parent_tree.py
+
+An example of a self-referential table.
+
+- <https://docs.sqlalchemy.org/en/20/orm/self_referential.html>
+- <https://docs.sqlalchemy.org/en/20/_modules/examples/adjacency_list/adjacency_list.html>
 
 ### generic_relationship_example.py
 

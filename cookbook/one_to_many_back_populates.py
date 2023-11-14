@@ -28,7 +28,6 @@ class User:
 
 @dataclass
 class Address:
-    # id: int = field(init=False)
     email_address: str | None = None
     uuid: str | None = None
 
@@ -46,7 +45,6 @@ user_table = Table(
 address_table = Table(
     "address",
     mapper_registry.metadata,
-    # Column("id", Integer, primary_key=True),
     Column("user_id", String(40), ForeignKey("user.uuid")),
     Column("email_address", String(50)),
     Column("uuid", String(40), primary_key=True, default=lambda: str(uuid.uuid4())),
