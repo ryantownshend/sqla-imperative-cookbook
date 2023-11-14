@@ -19,7 +19,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 
-from rich import print
+from rich.console import Console
 from sqlalchemy import (
     Column,
     DateTime,
@@ -30,6 +30,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Session, registry, relationship
 
+console = Console()
 mapper_registry = registry()
 
 
@@ -151,7 +152,7 @@ def start_mappers() -> None:
 
 
 def run() -> None:
-    print("run")
+    console.print("run")
     engine = create_engine("sqlite://", echo=True)
     start_mappers()
     mapper_registry.metadata.create_all(engine)
@@ -166,16 +167,14 @@ def run() -> None:
 
         session.commit()
 
-        qual1 = QualificationRecord(
-            student=student, event=event1, course=course1, instructor=instructor
-        )
+        qual1 = QualificationRecord(student=student, event=event1, course=course1, instructor=instructor)
         session.add(qual1)
         session.commit()
 
-        print(student)
+        console.print(student)
 
-        print("---")
-        print(instructor)
+        console.print("---")
+        console.print(instructor)
 
         assert len(student.qualifications) == 1
         assert len(student.instructed) == 0

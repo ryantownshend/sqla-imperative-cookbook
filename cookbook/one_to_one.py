@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from rich import print
+from rich.console import Console
 from sqlalchemy import Column, ForeignKey, Integer, String, Table, create_engine
 from sqlalchemy.orm import Session, registry, relationship
 
+console = Console()
 mapper_registry = registry()
 
 
@@ -56,7 +57,7 @@ def start_mappers() -> None:
 
 
 def run() -> None:
-    print("run")
+    console.print("run")
     engine = create_engine("sqlite://", echo=True)
     start_mappers()
     mapper_registry.metadata.create_all(engine)
@@ -70,7 +71,7 @@ def run() -> None:
         session.commit()
 
         s1_product = session.get(Soldier, 1)
-        print(s1_product)
+        console.print(s1_product)
 
 
 if __name__ == "__main__":

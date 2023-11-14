@@ -10,11 +10,11 @@ packages = [{include = "cookbook"}]
 python = "^3.11"
 click = "^8.1.7"
 sqlalchemy = "^2.0.20"
-rich = "^13.5.3"
 black = "^23.9.1"
 mypy = "^1.5.1"
 ruff = "^0.0.290"
 pytest = "^7.4.2"
+rich = "^13.6.0"
 
 [build-system]
 requires = ["poetry-core"]

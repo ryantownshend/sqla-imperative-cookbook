@@ -3,10 +3,11 @@ from __future__ import annotations
 import uuid
 from dataclasses import dataclass, field
 
-from rich import print
+from rich.console import Console
 from sqlalchemy import Column, ForeignKey, String, Table, create_engine
 from sqlalchemy.orm import Session, registry, relationship
 
+console = Console()
 mapper_registry = registry()
 
 
@@ -82,7 +83,7 @@ def start_mappers() -> None:
 
 
 def run() -> None:
-    print("run")
+    console.print("run")
     engine = create_engine("sqlite://", echo=True)
     start_mappers()
     mapper_registry.metadata.create_all(engine)
@@ -101,9 +102,8 @@ def run() -> None:
         assert user.uuid is not None
         assert len(user.addresses) == 4
 
-        print(user)
-
-        print(address_table.c.uuid)
+        console.print(user)
+        console.print(address_table.c.uuid)
 
 
 if __name__ == "__main__":

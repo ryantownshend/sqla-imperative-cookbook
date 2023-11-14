@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from rich import print
+from rich.console import Console
 from sqlalchemy import Column, ForeignKey, Integer, String, Table, create_engine
 from sqlalchemy.orm import Session, registry, relationship
 
+console = Console()
 mapper_registry = registry()
 
 
@@ -48,9 +49,7 @@ address_table = Table(
 )
 
 user_properties = {
-    "addresses": relationship(
-        Address, backref="user", order_by=address_table.columns.id
-    ),
+    "addresses": relationship(Address, backref="user", order_by=address_table.columns.id),
 }
 
 
@@ -72,7 +71,7 @@ def start_mappers() -> None:
 
 
 def run() -> None:
-    print("run")
+    console.print("run")
     engine = create_engine("sqlite://", echo=True)
     start_mappers()
     mapper_registry.metadata.create_all(engine)
@@ -87,10 +86,10 @@ def run() -> None:
         user.addresses.append(Address(email_address="email4"))
 
         session.commit()
-        print(user)
+        console.print(user)
 
         add1 = session.get(Address, 1)
-        print(add1)
+        console.print(add1)
 
 
 if __name__ == "__main__":
