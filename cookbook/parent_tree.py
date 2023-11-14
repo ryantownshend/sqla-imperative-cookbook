@@ -46,13 +46,13 @@ def start_mappers() -> None:
 
 
 def run() -> None:
-    print("run")
+    console.print("run")
     engine = create_engine("sqlite://", echo=True)
     start_mappers()
     mapper_registry.metadata.create_all(engine)
 
     with Session(engine) as session:
-        print("gak")
+        console.print("gak")
         node = Node(name="root")
         node1 = Node(name="node1", parent=node)
         node2 = Node(name="node2", parent=node)

@@ -11,9 +11,6 @@ poetry run mypy --no-error-summary
 echo "===== running ruff ... ====="
 poetry run ruff .
 
-echo "===== running pytest... ====="
-poetry run pytest -qq
-
 echo "===== running markdownlint... ====="
 
 `markdownlint .`

@@ -6,9 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-
 from rich.console import Console
-
 from sqlalchemy import Column, ForeignKey, Integer, String, Table, create_engine
 from sqlalchemy.orm import Session, registry, relationship
 
